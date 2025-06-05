@@ -119,6 +119,9 @@ class NodeVisitor extends NodeVisitorAbstract
         $this->stack = [];
     }
 
+    /**
+     * @return Node|int|null
+     */
     public function enterNode(Node $node)
     {
         $this->stack[] = $node;
@@ -194,6 +197,9 @@ class NodeVisitor extends NodeVisitorAbstract
         }
     }
 
+    /**
+     * @return Node|int|null
+     */
     public function leaveNode(Node $node, bool $preserveStack = false)
     {
         if (!$preserveStack) {
