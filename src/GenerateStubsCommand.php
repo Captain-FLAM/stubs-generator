@@ -63,6 +63,7 @@ class GenerateStubsCommand extends Command
             ->addOption('header', null, InputOption::VALUE_REQUIRED, 'A doc comment to prepend to the top of the generated stubs file.  (Will be added below the opening `<?php` tag.)', '')
             ->addOption('nullify-globals', null, InputOption::VALUE_NONE, 'Initialize all global variables with a value of `null`, instead of their assigned value.')
             ->addOption('include-inaccessible-class-nodes', null, InputOption::VALUE_NONE, 'Include inaccessible class nodes like private members.')
+            ->addOption('strip-namespaces', null, InputOption::VALUE_NONE, 'Strip namespace declarations from the output.')
             ->addOption('stats', null, InputOption::VALUE_NONE, 'Whether to print stats instead of outputting stubs.  Stats will always be printed if --out is provided.');
 
         foreach (self::SYMBOL_OPTIONS as $opt) {
@@ -118,7 +119,8 @@ class GenerateStubsCommand extends Command
         $finder = $this->parseSources($input);
         $generator = new StubsGenerator($this->parseSymbols($input), [
             'nullify_globals' => $input->getOption('nullify-globals'),
-            'include_inaccessible_class_nodes' => $input->getOption('include-inaccessible-class-nodes')
+            'include_inaccessible_class_nodes' => $input->getOption('include-inaccessible-class-nodes'),
+            'strip_namespaces' => $input->getOption('strip-namespaces')
         ]);
 
         $result = $generator->generate($finder, $visitor);
