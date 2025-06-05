@@ -157,3 +157,19 @@ The set of symbol types are:
 - `StubsGenerator::CONSTANTS`: Constant declarations.
 - `StubsGenerator::DEFAULT`: Shortcut to include everything _except_ undocumented global variables.
 - `StubsGenerator::ALL`: Shortcut to include everything.
+
+#### Flatten namespaces
+
+To generate stubs without namespace blocks, enable the `strip_namespaces` option:
+
+```php
+$generator = new StubsGenerator(StubsGenerator::ALL, ['strip_namespaces' => true]);
+```
+
+From the command line:
+
+```bash
+generate-stubs --strip-namespaces /path/to/my-library
+```
+
+The output will omit `namespace { ... }` blocks entirely. This is useful for simple autocompletion but may produce invalid PHP when namespaced declarations share the same name.

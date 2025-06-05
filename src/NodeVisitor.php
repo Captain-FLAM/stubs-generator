@@ -51,6 +51,8 @@ class NodeVisitor extends NodeVisitorAbstract
     private $nullifyGlobals;
     /** @var bool */
     private $includeInaccessibleClassNodes;
+    /** @var bool */
+    private $stripNamespaces;
 
     /**
      * @psalm-suppress PropertyNotSetInConstructor
@@ -106,6 +108,7 @@ class NodeVisitor extends NodeVisitorAbstract
 
         $this->nullifyGlobals = !empty($config['nullify_globals']);
         $this->includeInaccessibleClassNodes = ($config['include_inaccessible_class_nodes'] ?? false) === true;
+        $this->stripNamespaces = ($config['strip_namespaces'] ?? false) === true;
 
         $this->globalNamespace = new Namespace_();
     }
@@ -303,7 +306,7 @@ class NodeVisitor extends NodeVisitorAbstract
             $this->resolveClassLike($classLike);
         }
 
-        if ($this->allAreGlobal($this->namespaces) && $this->allAreGlobal($this->classLikeNamespaces)) {
+        if ($this->stripNamespaces || ($this->allAreGlobal($this->namespaces) && $this->allAreGlobal($this->classLikeNamespaces))) {
             return array_merge(
                 $this->reduceStmts($this->classLikeNamespaces),
                 $this->reduceStmts($this->namespaces),

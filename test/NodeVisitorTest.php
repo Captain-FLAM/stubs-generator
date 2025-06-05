@@ -46,6 +46,7 @@ class NodeVisitorTest extends TestCase
             ['globals', 'globals.nullified', StubsGenerator::GLOBALS, [ 'nullify_globals' => true ]],
             'junk',
             'namespaces',
+            ['namespaces', 'namespaces.flat', null, ['strip_namespaces' => true]],
             'constants',
         ];
 
