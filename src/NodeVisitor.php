@@ -114,12 +114,12 @@ class NodeVisitor extends NodeVisitorAbstract
         $this->globalNamespace = new Namespace_();
     }
 
-    public function beforeTraverse(array $nodes): void
+    public function beforeTraverse(array $nodes)
     {
         $this->stack = [];
     }
 
-    public function enterNode(Node $node): Node|int|null
+    public function enterNode(Node $node)
     {
         $this->stack[] = $node;
 
@@ -194,7 +194,7 @@ class NodeVisitor extends NodeVisitorAbstract
         }
     }
 
-    public function leaveNode(Node $node, bool $preserveStack = false): Node|int|null
+    public function leaveNode(Node $node, bool $preserveStack = false)
     {
         if (!$preserveStack) {
             array_pop($this->stack);
@@ -219,14 +219,18 @@ class NodeVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof If_) {
-            // Replace the if statement with its children, keeping only those
-            // deemed necessary.
+            // Replace the if statement with its set of children, but only those
+            // that we want.  Have to manually call leaveNode on each; it won't
+            // be called automatically..
+            $stmts = [];
             foreach ($node->stmts as $stmt) {
-                $this->leaveNode($stmt, true);
+                if ($this->leaveNode($stmt, true) !== NodeTraverser::REMOVE_NODE) {
+                    $stmt = $stmt;
+                }
             }
             // We're leaving it.
             $this->isInIf = false;
-            return NodeTraverser::REMOVE_NODE;
+            return $stmts;
         }
 
         if ($node instanceof Namespace_) {
@@ -284,7 +288,7 @@ class NodeVisitor extends NodeVisitorAbstract
         return NodeTraverser::REMOVE_NODE;
     }
 
-    public function afterTraverse(array $nodes): void
+    public function afterTraverse(array $nodes)
     {
         // Don't keep any empty namespaces.
         $this->namespaces = array_filter($this->namespaces, function (Namespace_ $ns): bool {
